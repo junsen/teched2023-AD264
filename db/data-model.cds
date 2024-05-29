@@ -8,6 +8,9 @@ using
 }
 from '@sap/cds/common';
 
+using { API_BUSINESS_PARTNER as S4} from 's4-bupa-integration/bupa';
+
+
 /**
  * Incidents created by Customers.
  */
@@ -45,3 +48,14 @@ entity Conversations : cuid, managed {
   author    : String   @cds.on.insert: $user  @title: 'Author' ;
   message   : String                          @title: 'Message';
 }
+
+entity Customers as projection on S4.A_BusinessPartner {
+  key BusinessPartner     as ID,
+      BusinessPartnerFullName as name
+}
+
+extend Incidents with {
+  customer   : Association to Customers;
+}
+
+annotate Customers with @cds.persistence.table;
